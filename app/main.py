@@ -1,4 +1,4 @@
-from fastapi import FastAPI, Depends
+from fastapi import FastAPI, Depends, Response
 from app.db import get_db
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import text
@@ -33,10 +33,11 @@ def hello():
 
 
 @app.get("/health")
-async def health_check(db: AsyncSession = Depends(get_db)):
+async def health_check(db: AsyncSession = Depends(get_db), response: Response = None):
     try:
         await db.execute(text("SELECT 1"))
         return {"status": "healthy"}
     except Exception as e:
         logger.error("health check failed", extra={"error": str(e)})
+        response.status_code = 503
         return {"status": "unhealthy"}
