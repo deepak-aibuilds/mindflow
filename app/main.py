@@ -26,4 +26,4 @@ async def log_requests(request: Request, call_next):
 
 @app.get('/')
 def hello():
-    return {'message': "hello"}
+    return {'message': "Hello Deepak - What Are We Building Today? "}
