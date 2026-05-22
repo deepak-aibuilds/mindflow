@@ -1,7 +1,6 @@
 
 from sqlalchemy.ext.asyncio import AsyncSession
 from langchain_mistralai import ChatMistralAI
-from langchain_core.prompts import ChatPromptTemplate
 
 from app.core import settings
 from app.services import search_items
