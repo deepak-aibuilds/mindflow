@@ -5,7 +5,10 @@ from sqlalchemy import text
 from app.core import logger
 import time
 from starlette.requests import Request
+from app.routes import ingestrouter, queryrouter
 app = FastAPI()
+app.include_router(ingestrouter)
+app.include_router(queryrouter)
 
 
 @app.middleware('http')
