@@ -7,6 +7,7 @@ class Settings(BaseSettings):
     secret_key: str = ''
     supabase_url: str
     supabase_key: str
+    redis_url: str
     debug: bool = False
 
     class Config:
