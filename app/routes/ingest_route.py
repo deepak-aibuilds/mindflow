@@ -7,7 +7,7 @@ from app.services import save_db, scraper, extract_pdf, extract_voice, embed_and
 router = APIRouter(prefix='/ingest', tags=['Ingest'])
 
 
-@router.post("/", response_model=ItemResponse)
+@router.post("", response_model=ItemResponse)
 async def ingest(
     background_tasks: BackgroundTasks,   # fixed: plural, correct FastAPI convention
     title:       str | None    = Form(default=None),

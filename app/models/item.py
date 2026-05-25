@@ -1,4 +1,4 @@
-from sqlalchemy import Column, String, Integer, Text, DateTime, Boolean
+from sqlalchemy import Column, String, Integer, Text, DateTime, Boolean, ForeignKey
 from app.db import Base
 from sqlalchemy.sql import func
 from pgvector.sqlalchemy import Vector
@@ -15,3 +15,11 @@ class Item(Base):
     created_at =    Column(DateTime(timezone=True), server_default=func.now())
     processed =     Column(Boolean, default=False)
     embedding =     Column(Vector(1024), nullable=True)
+
+class Chunk(Base):
+    __tablename__ = 'chunks'
+    id= Column(Integer, primary_key= True)
+    item_id = Column(Integer, ForeignKey('items.id'))
+    content = Column(Text, nullable=False)
+    embedding = Column(Vector(1024), nullable=True)
+    chunk_index = Column(Integer, nullable=False)

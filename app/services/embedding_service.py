@@ -1,7 +1,8 @@
 from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker
 from langchain_mistralai import MistralAIEmbeddings
 from sqlalchemy import select
-from app.models import Item
+from langchain_text_splitters import RecursiveCharacterTextSplitter
+from app.models import Item, Chunk
 from app.core import settings, logger
 from app.db import engine
 import os
@@ -29,7 +30,18 @@ async def embed_and_store(item_id: int, content: str):
             # Mistral API can fail — network error, rate limit, etc.
             # We catch and log instead of crashing silently.
             try:
-                vector = embeddings.embed_query(content)
+                vector_content = embeddings.embed_query(content)
+                splitter = RecursiveCharacterTextSplitter(chunk_size=500,chunk_overlap=50)
+                chunks = splitter.split_text(content)
+                vectors = embeddings.embed_documents(chunks)
+                for i, (chunk, vector) in enumerate(zip(chunks, vectors)):
+                    new_chunk = Chunk(item_id=item_id, 
+                                      content=chunk, 
+                                      embedding=vector, 
+                                      chunk_index=i)
+                    db.add(new_chunk)
+                await db.commit()
+
             except Exception as e:
                 logger.error(
                     "Embedding generation failed",
@@ -50,7 +62,7 @@ async def embed_and_store(item_id: int, content: str):
                 )
                 return
 
-            item_detail.embedding = vector
+            item_detail.embedding = vector_content
             item_detail.processed = True
             await db.commit()
             await db.refresh(item_detail)

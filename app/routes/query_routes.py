@@ -1,5 +1,5 @@
 from fastapi import APIRouter, Depends, Query
-from app.schemas import ItemResponse
+from app.schemas import ChunkResult, ItemResponse
 from app.db import get_db
 from sqlalchemy.ext.asyncio import AsyncSession
 from app.services import search_items, ask_brain
@@ -20,7 +20,7 @@ class AskRequest(BaseModel):
     question: str
 
 
-@router.get('/search', response_model=list[ItemResponse])
+@router.get('/search', response_model=list[ChunkResult])
 async def search_query(
     q:     str,
     limit: int          = Query(default=5, le=20),
