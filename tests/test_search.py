@@ -1,5 +1,4 @@
-from unittest.mock import patch, MagicMock
-from langchain_mistralai import MistralAIEmbeddings
+from unittest.mock import patch
 
 async def test_search_mocked(client):
     with patch("app.routes.query_routes.search_items") as mock_search:
