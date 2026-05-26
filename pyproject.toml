@@ -35,3 +35,7 @@ dependencies = [
 [tool.pytest.ini_options]
 asyncio_mode = "auto"
 pythonpath = ["."]
+asyncio_default_fixture_loop_scope = "function"
+markers = [
+    "slow: marks tests as slow as they hit DB or external APIs",
+]

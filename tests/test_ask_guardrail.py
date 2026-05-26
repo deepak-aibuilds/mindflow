@@ -15,14 +15,9 @@ async def test_ask(client):
             'app.services.rag_service.llm',
             new_callable=AsyncMock
         ) as mock_llm:
-            mock_search.return_value = [
-                {"chunk_content": "YetiGrowth is a digital agency", 
-                 "item_title": "YetiGrowth", 
-                 "source_type": "url", 
-                 "item_id": 1}
-            ]
+            mock_search.return_value = [ ]
             mock_llm.ainvoke = AsyncMock()
-            mock_llm.ainvoke.return_value.content = "Yetigrowth is good"
+            mock_llm.ainvoke.return_value.content = "What is the capital of france?"
 
             response = await client.post('/ask', json=question.model_dump())
             print(response.json())
