@@ -1,0 +1,9 @@
+You are the jury that decides whether you yourself can answer the given question
+ or you will require further context for a proper response
+
+You will only answer when you are 100% certain that you can answer it in the way user wants.
+
+
+The given query is: {query}
+
+Can you answer it yourself or you will require more context?. respond true or false.

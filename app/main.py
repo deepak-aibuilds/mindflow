@@ -5,11 +5,11 @@ from sqlalchemy import text
 from app.core import logger
 import time
 from starlette.requests import Request
-from app.routes import ingestrouter, queryrouter
+from app.routes import ingestrouter, queryrouter, agentrouter
 app = FastAPI()
 app.include_router(ingestrouter)
 app.include_router(queryrouter)
-
+app.include_router(agentrouter)
 
 @app.middleware('http')
 async def log_requests(request: Request, call_next):
