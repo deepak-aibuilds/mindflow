@@ -89,18 +89,23 @@ with tab3:
     question = st.text_input("What do you want to know?")
 
     if st.button("Ask"):
-        with st.spinner("Thinking..."):
+        if not question:
+            st.warning("Enter a question first.")
+        else:
+            st.markdown("### Answer")
+            answer_placeholder = st.empty()
+            full_answer = ""
+
             try:
-                response = httpx.post(
+                with httpx.stream(
+                    "POST",
                     f"{API_URL}/ask",
                     json={"question": question},
                     timeout=30,
-                )
-                if response.status_code == 200:
-                    answer = response.json().get("answer", "No answer returned.")
-                    st.markdown("### Answer")
-                    st.write(answer)
-                else:
-                    st.error(f"Failed: {response.json().get('detail', 'Unknown error')}")
+                ) as r:
+                    for chunk in r.iter_text():
+                        if chunk:
+                            full_answer += chunk
+                            answer_placeholder.markdown(full_answer)
             except Exception as e:
                 st.error(f"Request failed: {e}")

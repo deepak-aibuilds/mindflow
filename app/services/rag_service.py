@@ -15,7 +15,8 @@ llm = ChatMistralAI(model='mistral-small-latest')
 async def ask_brain(question:str, db:AsyncSession):
     similar_chunks = await search_items(question,3,db)
     if not similar_chunks:
-        return "I don;t have anything relevant in my knowledge for this question"
+        yield "I don't have anything relevant in my knowledge for this question"
+        return
     context = "\n\n".join([chunk["chunk_content"] for chunk in similar_chunks])
     sources = [f"- {chunk['item_title']} ({chunk['source_type']})" for chunk in similar_chunks]
     sources_str = '\n'.join(sources)
@@ -42,6 +43,7 @@ Question:
 
 Answer:
 """
-    response = await llm.ainvoke(prompt)
-    return response.content
+    async for chunk in llm.astream(prompt):
+        yield chunk.content
+
 

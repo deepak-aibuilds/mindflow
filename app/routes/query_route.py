@@ -8,6 +8,7 @@ from app.services import generate_digest, get_action, get_cache, set_cache, dele
 from app.schemas import DigestOutput, ActionItems
 from sqlalchemy import select
 from app.models import Item
+from fastapi.responses import StreamingResponse
 import json
 
 router = APIRouter(tags=['Query'])
@@ -34,8 +35,7 @@ async def ask_llm(
     request: AskRequest,
     db:      AsyncSession = Depends(get_db),
 ):
-    response = await ask_brain(request.question, db)
-    return {"answer": response}
+    return StreamingResponse(ask_brain(request.question, db),media_type='text/event-stream')
 
 @router.get('/digest', response_model=DigestOutput)
 async def digest(db:AsyncSession = Depends(get_db)):
